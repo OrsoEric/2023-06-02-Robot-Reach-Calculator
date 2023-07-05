@@ -1,6 +1,6 @@
-import sympy as sp
+import sympy as sympy
 from sympy import ordered
-x, y, z = sp.symbols("x y z")
+x, y, z = sympy.symbols("x y z")
 
 def seek(eqs, do, sol=[], strict=True):
     from sympy.solvers.solvers import _invert as f
@@ -89,8 +89,8 @@ def focus(eqs, *syms, **kwargs):
     return sol
 
 l_equation = []
-l_equation.append(sp.Eq(y, z))
-l_equation.append(sp.Eq(x, sp.Derivative(y**3, z)))
+l_equation.append(sympy.Eq(y, z))
+l_equation.append(sympy.Eq(x, sympy.Derivative(y**3, z)))
 
 solution = focus(l_equation, x, y, simplify=True)
 print(solution)    # {y: z, x: 3*z**2}
