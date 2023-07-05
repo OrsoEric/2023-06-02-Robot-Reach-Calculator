@@ -32,7 +32,8 @@ Position and rotation of the end effector relative to World
 Given the geometry, I have a forward solution that links the angles of the joints to the position of the end effector
 
 # Forward Sensitivity
-In a given configuration, each end effector axis has a given sensitivity to changes in joint angle
+In a given configuration, each end effector axis has a given sensitivity to changes in joint angle [°/mm]
+This informs about gear ratio as well
 
 # Inverse Kinematic
 Given a desired end position of the end effector, a number of joint angles may exist that achieve that position
@@ -40,6 +41,19 @@ Given a desired end position of the end effector, a number of joint angles may e
 # Inverse Sensitivity
 In any given configuration, each joint will have a given sensitivity to changes in end effector position
 The inverse sensitivity allows to estimate the load at each joint knowing the load at the end effector
+
+# Reach Map
+Draw each point that can be reached.
+To give colors to the reach:
+A point is easy to reach if the angles are close to the default angles
+A point is hard to reach if the angles are far from the default angles
+Another idea to give color to the reach is to use a bin system.
+Scan joints at a given angular resolution, and show up where they end up.
+Regions with lots of dots are easy, regions with few dots are hard
+
+# Sensitivity Map
+Map each point depending on the overall sensitivity across joints
+Singular points are going to have very high sensitivity and be hard to reach
 
 # Example: Inverse Pendulum
 I have just one joint, that is in the World (0,0). There is an hidden zero length link between World and J1

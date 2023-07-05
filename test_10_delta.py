@@ -45,24 +45,27 @@ def system():
     #Motor 1 fixture
     n_motor_1_x = lib_sympy.Symbol('M1X')
     n_motor_1_y = lib_sympy.Symbol('M1Y')
-    l_equations = l_equations +create_segment_equations( n_motor_1_x, n_motor_1_y, 0, 0, n_phase_1, 0, n_interaxis_motor/2)
+    l_equations = l_equations +create_segment_equations( n_motor_1_x, n_motor_1_y, 0, 0, n_phase_1, 0, n_interaxis_motor/2 ) 
     #motor 2 fixture
     n_motor_2_x = lib_sympy.Symbol('M2X')
     n_motor_2_y = lib_sympy.Symbol('M2Y')
-    l_equations = l_equations +create_segment_equations( n_motor_2_x, n_motor_2_y, 0, 0, n_phase_2, 0, n_interaxis_motor/2)
+    l_equations = l_equations +create_segment_equations( n_motor_2_x, n_motor_2_y, 0, 0, n_phase_2, 0, n_interaxis_motor/2 )
     #Segment 3 moved by Motor 1
     n_joint_3_x = lib_sympy.Symbol('J3X')
     n_joint_3_y = lib_sympy.Symbol('J3Y')
     
     n_joint_1_theta = lib_sympy.Symbol('T1')
     n_link_1_3 = lib_sympy.Symbol('L13')
-    l_equations = l_equations +create_segment_equations( n_joint_3_x, n_joint_3_y, n_motor_1_x, n_motor_1_y, 0, n_joint_1_theta, n_link_1_3)
+    l_equations = l_equations +create_segment_equations( n_joint_3_x, n_joint_3_y, n_motor_1_x, n_motor_1_y, 0, n_joint_1_theta, n_link_1_3 )
 
     print(l_equations)
     #lib_sympy.simplify( l_equations,n_joint_3_x )
-    solution = lib_sympy.solve( l_equations, [n_joint_3_x],exclude=[n_motor_1_x], dict =True )
+    #solution = lib_sympy.solve( l_equations, [n_joint_3_x, n_joint_3_y],exclude=[n_motor_1_x], dict =True )
+    solution = lib_sympy.linsolve( l_equations, [n_joint_3_x, n_joint_3_y] )
     print("Solution", solution)
 
+    s_wolfram = lib_sympy.mathematica_code( l_equations )
+    print("Wolfram", s_wolfram )
 
     return
 
