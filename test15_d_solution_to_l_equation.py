@@ -4,12 +4,22 @@
 #I'm using sympy to make a symbolic solution, and then derive the equations and solve them
 #My problem is that solve doesn't make an effort to cancel out symbols
 
-import numpy as lib_numpy
+import numpy as numpy
 # Import sympy library
 import sympy as sympy
-from sympy import ordered
+#from sympy import ordered
 #Display
 import matplotlib.pyplot as plt
+
+#solve is returning me a dictionary with index name of variable, and content the symbolic solution
+#I want to translate back that dictionary into a list of equations for later processing
+
+#d_solution = {EX: L1*cos(T1) + L2*cos(T1 + T2), EYdT1: L1*cos(T1) + L2*cos(T1 + T2), ETdT1: 1, EY: L1*sin(T1) + L2*sin(T1 + T2), M2X: L1*cos(T1), EXdT1: -L1*sin(T1) - L2*sin(T1 + T2), M2Y: L1*sin(T1), ET: T1 + T2, M2T: T1}
+
+def my_solve():
+
+    return
+
 
 def seek(eqs, do, sol=[], strict=True):
     from sympy.solvers.solvers import _invert as f
@@ -34,7 +44,7 @@ def seek(eqs, do, sol=[], strict=True):
         do.remove(x)
         if not strict:
             do.extend(i.free_symbols)
-            do = list(ordered(do))
+            do = list(sympy.ordered(do))
         for _ in range(len(eqs)):
             if not isinstance(eqs[_], Eq):
                 continue
@@ -63,39 +73,40 @@ def focus(eqs, *syms, **kwargs):
     from sympy.solvers.solvers import _invert as f
     #from sympy.core.compatibility import ordered
     from sympy import Eq, Tuple
-    evaluate = kwargs.get('evaluate', True)
+    x_evaluate = kwargs.get('evaluate', True)
     assert all(isinstance(i, Eq) for i in eqs)
-    sol = []
+    l_solution = []
     free = Tuple(*eqs).free_symbols
     do = set(syms) & free
     if not do:
-        return sol
+        return l_solution
     eqs = list(eqs)
-    seek(eqs, do, sol)
+    seek(eqs, do, l_solution)
     assert not do
-    for x, i in sol:
+    for x, i in l_solution:
         do |= i.free_symbols
-    do = list(ordered(do))  # make it canonical
-    seek(eqs, do, sol, strict=False)
-    if evaluate:
-        while len(sol) > len(syms):
-            x, s = sol.pop()
-            for i in range(len(sol)):
-                sol[i] = (sol[i][0], sol[i][1].xreplace({x: s}))
+    do = list(sympy.ordered(do))  # make it canonical
+    seek(eqs, do, l_solution, strict=False)
+    if x_evaluate:
+        while len(l_solution) > len(syms):
+            x, s = l_solution.pop()
+            for i in range(len(l_solution)):
+                l_solution[i] = (l_solution[i][0], l_solution[i][1].xreplace({x: s}))
         for i in reversed(range(1, len(syms))):
-            x, s = sol[i]
+            x, s = l_solution[i]
             for j in range(i):
-                y, t = sol[j]
-                sol[j] = y, f(y - t.xreplace({x: s}), y)[0]
-    simplify = kwargs.get("simplify", False)
-    if simplify:
-        for i in range(len(sol)):
-            sol[i] = (sol[i][0], sol[i][1].simplify())
-    if evaluate:
-        sol = dict(sol)
+                y, t = l_solution[j]
+                l_solution[j] = y, f(y - t.xreplace({x: s}), y)[0]
+    x_simplify = kwargs.get("simplify", False)
+    if x_simplify:
+        for i in range(len(l_solution)):
+            l_solution[i] = sympy.Eq(l_solution[i][0], l_solution[i][1].simplify())
+    if x_evaluate:
+        #sol = dict(sol)
+        l_solution = l_solution
     else:
-        sol = list(reversed(sol))
-    return sol
+        l_solution = list(reversed(l_solution))
+    return l_solution
 
 
 def create_rotation_matrix_2d( theta : sympy.Symbol):
